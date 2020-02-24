@@ -9,7 +9,11 @@ const responses = getResponses();
  */
 export async function handler(event: AWSLambda.APIGatewayEvent): Promise<AWSLambda.APIGatewayProxyResult> {
   try {
-    return responses.success('Its works!');
+    // Go database an get a list of all users
+    return responses.success([
+      {username: 'Qwerty', sex: 'Manle'},
+      {username: 'Asdf', sex: 'Female'},
+    ]);
   } catch (e) {
     return responses.error(e.message);
   }
