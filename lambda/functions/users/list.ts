@@ -12,7 +12,7 @@ const responses = getResponses();
 export async function handler(event: AWSLambda.APIGatewayEvent): Promise<AWSLambda.APIGatewayProxyResult> {
   try {
     // Double check
-    if (!checkAuth) {
+    if (!checkAuth(event)) {
       // 401 Unauthorized
       return responses.custom(401, false);
     }

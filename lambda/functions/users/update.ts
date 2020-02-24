@@ -13,7 +13,7 @@ export async function handler(event: AWSLambda.APIGatewayEvent): Promise<AWSLamb
   try {
     const body = getBodyParams(event);
     // Double check
-    if (!checkAuth) {
+    if (!checkAuth(event)) {
       // 401 Unauthorized
       return responses.custom(401, false);
     } else if (!body) {
