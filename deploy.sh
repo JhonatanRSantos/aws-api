@@ -3,7 +3,7 @@
 BASEDIR=$(dirname $0)
 ENVIRONMENT=$1
 
-intallDependencies () {
+installDependencies () {
     # check yarn
     if [ yarn ];
     then
@@ -32,19 +32,19 @@ then
         local)
             echo "Deploying local..."
             cd lambda/
-            intallDependencies
+            installDependencies
             STAGE=local sls offline
         ;;
         debug)
             echo "Deploying local..."
             cd lambda/
-            intallDependencies
+            installDependencies
             STAGE=local sls offline
         ;;
         dev)
             echo "Deploying development..."
             cd lambda/
-            intallDependencies
+            installDependencies
             STAGE=dev sls deploy
         ;;
     esac
