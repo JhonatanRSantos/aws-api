@@ -30,8 +30,11 @@ plugins:
 
 functions:
 
+  default_authorizer:
+    handler: functions/auth/auth.handler
+  
   login:
-    handler: functions/user/login.handler
+    handler: functions/users/login.handler
     timeout: ${self:provider.custom.timeout}
     vpc: ${self:provider.custom.vpc.no_vpc}      
     events:
@@ -39,4 +42,15 @@ functions:
           path: /login
           method: POST
           cors: true # Default AWS CORS config
+  
+  list_users:
+    handler: functions/users/list.handler
+    timeout: ${self:provider.custom.timeout}
+    vpc: ${self:provider.custom.vpc.no_vpc} 
+    events:
+      - http:
+          path: /users/list
+          method: GET
+          cors: true # Default AWS CORS config
+          authorizer: default_authorizer
       

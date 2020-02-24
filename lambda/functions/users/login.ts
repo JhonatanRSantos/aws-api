@@ -1,4 +1,4 @@
-import JWT from 'jsonwebtoken';
+import {sign} from 'jsonwebtoken';
 
 import {getResponses, getBodyParams} from '../../libs/lambdaHelper';
 import {getEnvironmentVariables} from '../../libs/tools';
@@ -23,7 +23,7 @@ export async function handler(event: AWSLambda.APIGatewayProxyEvent): Promise<AW
       return responses.badRequest(`Email and password are required`);
     } else {
       // Check if the received information exists on database
-      const token = JWT.sign({email: body.email}, ENVIRONMENT.JWT_SECRET);
+      const token = sign({email: body.email}, ENVIRONMENT.JWT_SECRET);
       return responses.success(token);
     }
   } catch (e) {
