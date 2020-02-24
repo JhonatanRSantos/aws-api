@@ -1,4 +1,6 @@
-import {getResponses} from '../../libs/lambdaHelper';
+import {
+  checkAuth, getResponses,
+} from '../../libs/lambdaHelper';
 
 const responses = getResponses();
 
@@ -9,6 +11,11 @@ const responses = getResponses();
  */
 export async function handler(event: AWSLambda.APIGatewayEvent): Promise<AWSLambda.APIGatewayProxyResult> {
   try {
+    // Double check
+    if (!checkAuth) {
+      // 401 Unauthorized
+      return responses.custom(401, false);
+    }
     // Go database an get a list of all users
     return responses.success([
       {username: 'Qwerty', sex: 'Manle'},
