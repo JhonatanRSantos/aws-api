@@ -43,6 +43,7 @@ export function getResponses() : Responses {
      * @return {AWSLambda.APIGatewayProxyResult} Response
      *
      */
+    // eslint-disable-next-line max-len
     custom : function(statusCode: number, status: boolean, message?:{[key: string]: any} | string): AWSLambda.APIGatewayProxyResult {
       return response(statusCode, status, message);
     },

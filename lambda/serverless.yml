@@ -33,13 +33,16 @@ functions:
   default_authorizer:
     handler: functions/auth/auth.handler
   
+  ########################################
+  #           USER FUNCTIONS             #
+  ########################################
   login:
     handler: functions/users/login.handler
     timeout: ${self:provider.custom.timeout}
     vpc: ${self:provider.custom.vpc.no_vpc}      
     events:
       - http:
-          path: /login
+          path: /users/login
           method: POST
           cors: true # Default AWS CORS config
   
@@ -53,4 +56,13 @@ functions:
           method: GET
           cors: true # Default AWS CORS config
           authorizer: default_authorizer
-      
+
+  register_user:
+    handler: functions/users/register.handler   
+    timeout: ${self:provider.custom.timeout}
+    vpc: ${self:provider.custom.vpc.no_vpc} 
+    events:
+      - http:
+          path: /users/register
+          method: POST
+          cors: true # Default AWS CORS config
