@@ -77,3 +77,14 @@ functions:
           method: DELETE
           cors: true # Default AWS CORS config
           authorizer: default_authorizer
+
+  update_user:
+    handler: functions/users/update.handler
+    timeout: ${self:provider.custom.timeout}
+    vpc: ${self:provider.custom.vpc.no_vpc}
+    events:
+      - http:
+          path: /users/update
+          method: PUT
+          cors: true # Default AWS CORS config
+          #authorizer: default_authorizer
