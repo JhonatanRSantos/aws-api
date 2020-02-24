@@ -1,3 +1,5 @@
+type AuthorizerInformation = {[key: string]: any} | null;
+
 interface Responses {
   success: (message?:{[key: string]: any} | string) => AWSLambda.APIGatewayProxyResult,
   error: (message?:{[key: string]: any} | string) => AWSLambda.APIGatewayProxyResult,
@@ -82,4 +84,28 @@ export function getBodyParams(event: AWSLambda.APIGatewayEvent): {[key: string]:
   } else {
     return null;
   }
+}
+
+/**
+ * Do a very simple auth check
+ * @param {AWSLambda.APIGatewayEvent} event The AWS API Gateway event
+ * @return {Boolean} Is authenticated
+ */
+export function checkAuth(event:AWSLambda.APIGatewayProxyEvent): Boolean {
+  const Authorization = event.headers.Authorization;
+  const authorizer = event.requestContext.authorizer;
+  if (!Authorization || !authorizer) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+/**
+ * Get the authorizer information
+ * @param {AWSLambda.APIGatewayEvent} event The AWS Lambda API Gateway Event
+ * @return {AuthorizerInformation} Authorizer informatio
+ */
+export function getAuthorizerInfo(event: AWSLambda.APIGatewayEvent): AuthorizerInformation {
+  return event.requestContext.authorizer ? event.requestContext.authorizer : null;
 }

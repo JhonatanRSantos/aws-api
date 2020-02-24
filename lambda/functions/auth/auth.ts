@@ -33,7 +33,7 @@ export function handler(
           decoded[key] = JSON.stringify(decoded[key]);
         }
       });
-      callback(null, buildIAMPolicy(`${decoded.userId}`, 'Allow', '*', decoded));
+      callback(null, buildIAMPolicy(`${decoded.email}`, 'Allow', '*', decoded));
     }
   } catch (e) {
     console.error(`Cannot authorize the request. Cause: ${e.message}`);
