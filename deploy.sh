@@ -4,11 +4,13 @@ BASEDIR=$(dirname $0)
 ENVIRONMENT=$1
 
 intallDependencies () {
-    if yarn
+    # check yarn
+    if [ yarn ];
     then
         echo "Installing with yarn"
         yarn
-    elif npm
+    # check npm
+    elif [ npm ];
     then
         echo "Installing with npm"
         npm install
