@@ -87,4 +87,4 @@ functions:
           path: /users/update
           method: PUT
           cors: true # Default AWS CORS config
-          #authorizer: default_authorizer
+          authorizer: default_authorizer
