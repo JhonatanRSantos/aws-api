@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+      "allowJs": true,
+      "checkJs": true,
+      "preserveConstEnums": true,
+      "strictNullChecks": true,
+      "noImplicitAny": true,
+      "noUnusedLocals": true,
+      "noImplicitThis": true,
+      "noImplicitReturns": true,
+      "inlineSources": true,
+      "inlineSourceMap": true,
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "outDir": ".build",
+      "target": "es2017",
+      "lib": [
+        "es2017"
+      ],
+      "esModuleInterop": true,
+      "sourceRoot": "./",
+      "rootDir": "./",
+      "resolveJsonModule": true
+    }
+  }

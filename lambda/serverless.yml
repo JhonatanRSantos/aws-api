@@ -1,0 +1,42 @@
+service: aws-api
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: ${opt:stage, 'dev'}
+
+  environment:
+    CONFIG: ${file(config/config.js)}
+
+  custom:
+    vpc:
+      no_vpc:
+        securityGroupIds: []
+        subnetIds: []
+  
+    timeout: 10
+    webpackConfig: 'webpack.config.js'
+    includeModules:
+      forceExclude:
+        - aws-sdk
+
+package:
+  # Pack all functions individually with all necessary dependencies.
+  individually: true
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+
+functions:
+
+  login:
+    handler: functions/user/login.handler
+    timeout: ${self:provider.custom.timeout}
+    vpc: ${self:provider.custom.vpc.no_vpc}      
+    events:
+      - http:
+          path: /login
+          method: POST
+          cors: true # Default AWS CORS config
+      
