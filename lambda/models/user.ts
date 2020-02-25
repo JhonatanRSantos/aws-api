@@ -3,6 +3,7 @@ import {addItem, getItem} from '../libs/dynamoHelper';
 import {getEnvironmentVariables} from '../libs/tools';
 
 const {USERS_TABLE, ENV} = getEnvironmentVariables(['USERS_TABLE', 'ENV']);
+const TableName = `${USERS_TABLE}-${ENV}`;
 
 interface User {
   name?: string,
@@ -42,7 +43,7 @@ export async function addUser(user: User): Promise<AWS.DynamoDB.PutItemOutput | 
       S : user[key],
     };
   });
-  return addItem(`${USERS_TABLE}-${ENV}`, Item);
+  return addItem({TableName, Item});
 }
 
 /**
@@ -51,10 +52,10 @@ export async function addUser(user: User): Promise<AWS.DynamoDB.PutItemOutput | 
  * @return {Promise<AWS.DynamoDB.GetItemOutput | AWS.AWSError>} Query response
  */
 export async function getUser(email: string): Promise<AWS.DynamoDB.GetItemOutput | AWS.AWSError> {
-  const key = {
+  const Key = {
     email : {
       S : email,
     },
   };
-  return getItem(`${USERS_TABLE}-${ENV}`, key);
+  return getItem({TableName, Key});
 }

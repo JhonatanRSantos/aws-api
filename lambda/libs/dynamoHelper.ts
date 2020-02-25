@@ -1,4 +1,4 @@
-import AWS, {AWSError} from 'aws-sdk';
+import AWS, {AWSError, DynamoDB} from 'aws-sdk';
 import {getEnvironmentVariables} from './tools';
 
 const env = getEnvironmentVariables([
@@ -14,24 +14,26 @@ const dynamoDB = new AWS.DynamoDB({
 
 /**
  * Adds an item into a table
- * @param {AWS.DynamoDB.TableName} TableName Table name
- * @param {AWS.DynamoDB.PutItemInputAttributeMap} Item Item to be added
+ * @param {AWS.DynamoDB.PutItemInput} params All parameters configuration to putItem
  * @return {Promise<AWS.DynamoDB.PutItemOutput | AWSError>} DynamoDB response
  */
-export async function addItem(TableName: AWS.DynamoDB.TableName,
-    Item: AWS.DynamoDB.PutItemInputAttributeMap): Promise<AWS.DynamoDB.PutItemOutput | AWSError> {
-  const params = {TableName, Item};
+export async function addItem(params: AWS.DynamoDB.PutItemInput): Promise<AWS.DynamoDB.PutItemOutput | AWSError> {
   return dynamoDB.putItem(params).promise();
 }
 
 /**
  * Gets an item from table
- * @param {AWS.DynamoDB.TableName} TableName Table name
- * @param {AWS.DynamoDB.Key } Key Partition key and value
+ * @param {AWS.DynamoDB.GetItemInput} params All search parameters to getItem
  * @return {Promise<AWS.DynamoDB.GetItemOutput | AWS.AWSError>} Dynamo response
  */
-export async function getItem(TableName: AWS.DynamoDB.TableName,
-    Key: AWS.DynamoDB.Key): Promise<AWS.DynamoDB.GetItemOutput | AWS.AWSError> {
-  const params = {TableName, Key};
+export async function getItem(params: AWS.DynamoDB.GetItemInput): Promise<AWS.DynamoDB.GetItemOutput | AWS.AWSError> {
   return dynamoDB.getItem(params).promise();
+}
+
+/**
+ *
+ * @param {AWS.DynamoDB.TableName} TableName
+ */
+export async function scan(TableName: AWS.DynamoDB.TableName) {
+  dynamoDB.scan();
 }
