@@ -1,5 +1,5 @@
 import {AWSError} from 'aws-sdk';
-import {addItem, getItem, scan} from '../libs/dynamoHelper';
+import {addItem, deleteItem,getItem, scan} from '../libs/dynamoHelper';
 import {getEnvironmentVariables} from '../libs/tools';
 
 const {USERS_TABLE, ENV} = getEnvironmentVariables(['USERS_TABLE', 'ENV']);
@@ -73,4 +73,18 @@ export async function getAllUsers(params: {Limit : number,
     ProjectionExpression : 'email',
     ...params,
   });
+}
+
+/**
+ * Delete user from database
+ * @param {String} email User email
+ * @return {Promise<AWS.DynamoDB.DeleteItemOutput | AWSError>} 
+ */
+export async function deleteUser(email: string): Promise<AWS.DynamoDB.DeleteItemOutput | AWSError> {
+  const Key = {
+    email: {
+      S: email
+    }
+  };
+  return deleteItem({TableName, Key});
 }

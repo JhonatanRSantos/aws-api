@@ -2,6 +2,8 @@ import {
   checkAuth, getAuthorizerInfo, getResponses,
 } from '../../libs/lambdaHelper';
 
+import {deleteUser} from '../../models/user';
+
 const responses = getResponses();
 /**
  * Delete user from database
@@ -18,7 +20,7 @@ export async function handler(event: AWSLambda.APIGatewayEvent): Promise<AWSLamb
     } else if (authInfo === null) {
       return responses.badRequest(`No authorization information`);
     } else {
-      // Do some validation and remove user from database
+      await deleteUser(authInfo.email);
       return responses.success();
     }
   } catch (e) {

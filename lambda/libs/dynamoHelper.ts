@@ -33,8 +33,17 @@ export async function getItem(params: AWS.DynamoDB.GetItemInput): Promise<AWS.Dy
 /**
  * Scans all table
  * @param {AWS.DynamoDB.ScanInput} params All configurations parameters to scan
- * @return {Promise<AWS.DynamoDB.ScanOutput | AWSError>}
+ * @return {Promise<AWS.DynamoDB.ScanOutput | AWSError>} Dynamo response
  */
 export async function scan(params: AWS.DynamoDB.ScanInput): Promise<AWS.DynamoDB.ScanOutput | AWSError> {
   return dynamoDB.scan(params).promise();
+}
+
+/**
+ * Deletes an item from table
+ * @param {AWS.DynamoDB.DeleteItemInput} params All configurations parameters to delete item
+ * @return {Promise<AWS.DynamoDB.DeleteItemOutput | AWS.AWSError>} Dynamo response
+ */
+export async function deleteItem(params: AWS.DynamoDB.DeleteItemInput): Promise<AWS.DynamoDB.DeleteItemOutput | AWS.AWSError> {
+  return dynamoDB.deleteItem(params).promise();
 }
