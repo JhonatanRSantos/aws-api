@@ -1,4 +1,4 @@
-import AWS, {AWSError, DynamoDB} from 'aws-sdk';
+import AWS, {AWSError} from 'aws-sdk';
 import {getEnvironmentVariables} from './tools';
 
 const env = getEnvironmentVariables([
@@ -14,7 +14,7 @@ const dynamoDB = new AWS.DynamoDB({
 
 /**
  * Adds an item into a table
- * @param {AWS.DynamoDB.PutItemInput} params All parameters configuration to putItem
+ * @param {AWS.DynamoDB.PutItemInput} params All configuration parameters to putItem
  * @return {Promise<AWS.DynamoDB.PutItemOutput | AWSError>} DynamoDB response
  */
 export async function addItem(params: AWS.DynamoDB.PutItemInput): Promise<AWS.DynamoDB.PutItemOutput | AWSError> {
@@ -24,16 +24,17 @@ export async function addItem(params: AWS.DynamoDB.PutItemInput): Promise<AWS.Dy
 /**
  * Gets an item from table
  * @param {AWS.DynamoDB.GetItemInput} params All search parameters to getItem
- * @return {Promise<AWS.DynamoDB.GetItemOutput | AWS.AWSError>} Dynamo response
+ * @return {Promise<AWS.DynamoDB.GetItemOutput | AWSError>} Dynamo response
  */
 export async function getItem(params: AWS.DynamoDB.GetItemInput): Promise<AWS.DynamoDB.GetItemOutput | AWS.AWSError> {
   return dynamoDB.getItem(params).promise();
 }
 
 /**
- *
- * @param {AWS.DynamoDB.TableName} TableName
+ * Scans all table
+ * @param {AWS.DynamoDB.ScanInput} params All configurations parameters to scan
+ * @return {Promise<AWS.DynamoDB.ScanOutput | AWSError>}
  */
-export async function scan(TableName: AWS.DynamoDB.TableName) {
-  dynamoDB.scan();
+export async function scan(params: AWS.DynamoDB.ScanInput): Promise<AWS.DynamoDB.ScanOutput | AWSError> {
+  return dynamoDB.scan(params).promise();
 }

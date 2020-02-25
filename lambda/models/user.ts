@@ -1,5 +1,5 @@
 import {AWSError} from 'aws-sdk';
-import {addItem, getItem} from '../libs/dynamoHelper';
+import {addItem, getItem, scan} from '../libs/dynamoHelper';
 import {getEnvironmentVariables} from '../libs/tools';
 
 const {USERS_TABLE, ENV} = getEnvironmentVariables(['USERS_TABLE', 'ENV']);
@@ -25,7 +25,7 @@ export async function addUser(user: User): Promise<AWS.DynamoDB.PutItemOutput | 
   if (!user.email || !user.password) {
     throw new Error('User email and password are required');
   }
-  const retreiveduser = await getUser(user.email);
+  const retreiveduser = <AWS.DynamoDB.GetItemOutput>await getUser(user.email);
   if (retreiveduser.Item) {
     throw new Error('User alredy registered');
   }
@@ -57,5 +57,20 @@ export async function getUser(email: string): Promise<AWS.DynamoDB.GetItemOutput
       S : email,
     },
   };
-  return getItem({TableName, Key});
+  return getItem({TableName, Key, ConsistentRead: true});
+}
+
+/**
+ * Get all users form database
+ * @param {{Limit: Number, ExclusiveStartKey: AWS.DynamoDB.Key }} params Custom params to list all users. Limit (total elements per page). ExclusiveStartKey (lastEvaluatedKey)
+ * @return {Promise<DynamoDB.ScanOutput | AWSError>}
+ */
+export async function getAllUsers(params: {Limit : number,
+  ExclusiveStartKey?: AWS.DynamoDB.Key}): Promise<AWS.DynamoDB.ScanOutput | AWSError> {
+  return scan({
+    TableName,
+    ConsistentRead       : true,
+    ProjectionExpression : 'email',
+    ...params,
+  });
 }
