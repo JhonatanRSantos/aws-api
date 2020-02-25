@@ -7,13 +7,23 @@ provider:
 
   environment:
     CONFIG: ${file(config/config.js)}
+  
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:Query
+        - dynamodb:Scan
+      Resource: '*'
 
   custom:
     vpc:
       no_vpc:
         securityGroupIds: []
         subnetIds: []
-  
+    dynamoTables:
+      users: aws-api-users-${self:provider.stage}
     timeout: 10
     webpackConfig: 'webpack.config.js'
     includeModules:
@@ -88,3 +98,7 @@ functions:
           method: PUT
           cors: true # Default AWS CORS config
           authorizer: default_authorizer
+
+resources:
+  ${file(resources/usersTable.yaml)}
+  

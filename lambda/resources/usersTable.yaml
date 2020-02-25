@@ -1,0 +1,19 @@
+Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties: 
+        AttributeDefinitions: 
+          - 
+            AttributeName: 'email'
+            AttributeType: 'S'
+
+        ProvisionedThroughput: 
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        
+        KeySchema: 
+          -
+            AttributeName: 'email'
+            KeyType: 'HASH'
+        
+        TableName: ${self:provider.custom.dynamoTables.users}
