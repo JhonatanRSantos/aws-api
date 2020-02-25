@@ -1,5 +1,5 @@
 import {getBodyParams, getResponses} from '../../libs/lambdaHelper';
-
+import {addUser} from '../../models/user';
 const response = getResponses();
 
 /**
@@ -13,8 +13,11 @@ export async function handler(event: AWSLambda.APIGatewayEvent): Promise<AWSLamb
     if (!body || !body.email || !body.password) {
       return response.error(`Email and Password are required`);
     } else {
-      // Do some processing with user information and save into database
-      return response.success(`New user added to database`);
+      await addUser({
+        email    : String(body.email),
+        password : String(body.password),
+      });
+      return response.success();
     }
   } catch (e) {
     console.error(`Cannot register this user. Cause: ${e.message}`);
