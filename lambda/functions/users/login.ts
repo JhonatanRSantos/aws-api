@@ -2,6 +2,7 @@ import {sign} from 'jsonwebtoken';
 
 import {getResponses, getBodyParams} from '../../libs/lambdaHelper';
 import {getEnvironmentVariables} from '../../libs/tools';
+import {getUser} from '../../models/user';
 
 const responses = getResponses();
 const ENVIRONMENT = getEnvironmentVariables(['JWT_SECRET']);
@@ -23,11 +24,18 @@ export async function handler(event: AWSLambda.APIGatewayProxyEvent): Promise<AW
       return responses.badRequest(`Email and password are required`);
     } else {
       // Check if the received information exists on database
-      const token = sign({email: body.email}, ENVIRONMENT.JWT_SECRET);
-      return responses.success(token);
+      // @ts-ignore
+      const {Item}: {Item: AWS.DynamoDB.GetItemOutput} = await getUser(String(body.email));
+      if (Item) {
+        // @ts-ignore
+        const token = sign({email: Item.email.S}, ENVIRONMENT.JWT_SECRET);
+        return responses.success(token);
+      } else {
+        return responses.custom(401, false, 'User not found');
+      }
     }
   } catch (e) {
-    return responses.error(e.message);
+    return responses.error(`Cannot sign in. Cause: ${e.message}`);
   }
 };
 
