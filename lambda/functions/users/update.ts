@@ -1,6 +1,7 @@
 import {
   checkAuth, getResponses, getBodyParams,
 } from '../../libs/lambdaHelper';
+import {updateUser} from '../../models/user';
 
 const responses = getResponses();
 
@@ -16,10 +17,17 @@ export async function handler(event: AWSLambda.APIGatewayEvent): Promise<AWSLamb
     if (!checkAuth(event)) {
       // 401 Unauthorized
       return responses.custom(401, false);
-    } else if (!body) {
+    } else if (!body || !body.email) {
       return responses.badRequest(`Cannot update user information. Cause: No data received`);
     } else {
-      // Do some validation and update user information
+      const user: User = {email: String(body.email)};
+      Object.keys(body).forEach((field) => {
+        if (field !== 'email') {
+        // @ts-ignore
+          user[field] = String(body[field]);
+        }
+      });
+      await updateUser(user);
       return responses.success();
     }
   } catch (e) {

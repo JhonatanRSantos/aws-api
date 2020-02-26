@@ -1,10 +1,10 @@
 import AWS, {AWSError} from 'aws-sdk';
 import {getEnvironmentVariables} from './tools';
-
+// Get environment variables
 const env = getEnvironmentVariables([
   'AWS_ACCESS_KEY_id', 'AWS_SECRET_KEY', 'AWS_REGION',
 ]);
-
+// Configurate DynamoDB
 const dynamoDB = new AWS.DynamoDB({
   accessKeyId     : env.AWS_ACCESS_KEY_id,
   secretAccessKey : env.AWS_SECRET_KEY,
@@ -46,4 +46,13 @@ export async function scan(params: AWS.DynamoDB.ScanInput): Promise<AWS.DynamoDB
  */
 export async function deleteItem(params: AWS.DynamoDB.DeleteItemInput): Promise<AWS.DynamoDB.DeleteItemOutput | AWS.AWSError> {
   return dynamoDB.deleteItem(params).promise();
+}
+
+/**
+ * Update an item from table
+ * @param {AWS.DynamoDB.UpdateItemInput} params Allconfigurations parameters to update item
+ * @return {Promise<AWS.DynamoDB.UpdateItemOutput | AWS.AWSError>} Dynamo response
+ */
+export async function updateItem(params: AWS.DynamoDB.UpdateItemInput): Promise<AWS.DynamoDB.UpdateItemOutput | AWS.AWSError> {
+  return dynamoDB.updateItem(params).promise();
 }

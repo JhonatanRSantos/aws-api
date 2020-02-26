@@ -1,19 +1,9 @@
 import {AWSError} from 'aws-sdk';
-import {addItem, deleteItem,getItem, scan} from '../libs/dynamoHelper';
+import {addItem, deleteItem, getItem, scan, updateItem} from '../libs/dynamoHelper';
 import {getEnvironmentVariables} from '../libs/tools';
 
 const {USERS_TABLE, ENV} = getEnvironmentVariables(['USERS_TABLE', 'ENV']);
 const TableName = `${USERS_TABLE}-${ENV}`;
-
-interface User {
-  name?: string,
-  email: string,
-  password?: string,
-  country?: string,
-  countryCode?: string,
-  phone?: string,
-  gender?: string,
-}
 
 /**
  * Adds a new user
@@ -78,7 +68,7 @@ export async function getAllUsers(params: {Limit : number,
 /**
  * Delete user from database
  * @param {String} email User email
- * @return {Promise<AWS.DynamoDB.DeleteItemOutput | AWSError>} 
+ * @return {Promise<AWS.DynamoDB.DeleteItemOutput | AWSError>} Dynamo response
  */
 export async function deleteUser(email: string): Promise<AWS.DynamoDB.DeleteItemOutput | AWSError> {
   const Key = {
@@ -87,4 +77,47 @@ export async function deleteUser(email: string): Promise<AWS.DynamoDB.DeleteItem
     }
   };
   return deleteItem({TableName, Key});
+}
+
+/**
+ * Update user information
+ * @param {User} user User information.
+ * @return {Promise<AWS.DynamoDB.UpdateItemOutput | AWSError>} Dynamo response
+ */
+export async function updateUser(user: User): Promise<AWS.DynamoDB.UpdateItemOutput | AWSError> {
+  const params: AWS.DynamoDB.UpdateItemInput = {
+    TableName,
+    Key: {
+      email: {
+        S: user.email
+      }
+    },
+    ExpressionAttributeNames: {
+      '#updatedAt': 'updatedAt'
+    },
+    ExpressionAttributeValues: {
+      ':updatedAt': {
+        N: `${Date.now()}`
+      }
+    },
+    UpdateExpression: ''
+  }
+
+  params.UpdateExpression = '';
+  Object.keys(user).forEach((filed) => {
+    if(params.ExpressionAttributeNames && params.ExpressionAttributeValues && filed !== 'email'){
+      params.ExpressionAttributeNames[`#${filed}`] = filed;
+      params.ExpressionAttributeValues[`:${filed}`] = {
+        // @ts-ignore
+        S: user[filed]
+      }
+      if (!params.UpdateExpression) {
+        params.UpdateExpression += `SET #${filed} = :${filed}`
+      } else {
+        params.UpdateExpression += `, #${filed} = :${filed}`
+      }
+    }    
+  });
+  params.UpdateExpression += ', #updatedAt = :updatedAt';
+  return updateItem(params);
 }
